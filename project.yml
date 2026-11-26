@@ -1,0 +1,50 @@
+name: TwoMonthCalendar
+options:
+  bundleIdPrefix: local.twomonthcalendar
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  TwoMonthCalendar:
+    type: application
+    platform: macOS
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: local.twomonthcalendar.app
+    sources: [App, Shared]
+    dependencies:
+      - target: CalendarWidget
+    # Host app is not sandboxed so it can launch Apple Calendar; only the widget needs the sandbox.
+    entitlements:
+      path: App/App.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Two Month Calendar
+        LSApplicationCategoryType: public.app-category.productivity
+        LSUIElement: true
+  CalendarWidget:
+    type: app-extension
+    platform: macOS
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: local.twomonthcalendar.app.widget
+    sources: [Widget, Shared]
+    entitlements:
+      path: Widget/Widget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Two Month Calendar
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
